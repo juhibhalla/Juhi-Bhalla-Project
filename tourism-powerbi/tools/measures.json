@@ -1,0 +1,212 @@
+[
+  {
+    "folder": "1 Market Analysis",
+    "name": "Total Tourists",
+    "dax": "SUM(Tourism[Number of Tourists])",
+    "format": "#,0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Tourist Nights",
+    "dax": "SUMX(Tourism, Tourism[Number of Tourists] * Tourism[Average Length of Stay])",
+    "format": "#,0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Avg Length of Stay",
+    "dax": "DIVIDE([Tourist Nights], [Total Tourists])",
+    "format": "0.0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Avg Satisfaction",
+    "dax": "AVERAGE(Tourism[Tourist Satisfaction Score])",
+    "format": "0.00"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Online Reviews",
+    "dax": "SUM(Tourism[Number of Online Reviews])",
+    "format": "#,0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Airport Passenger Traffic",
+    "dax": "SUM(Tourism[Airport Passenger Traffic])",
+    "format": "#,0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Total Flights",
+    "dax": "SUM(Tourism[Number of Flights])",
+    "format": "#,0"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Tourists YoY %",
+    "dax": "VAR SelectedYear = MAX(Tourism[Year])\nVAR CurrentValue = CALCULATE([Total Tourists], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear)\nVAR PriorValue = CALCULATE([Total Tourists], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear - 1)\nRETURN\n    DIVIDE(CurrentValue - PriorValue, PriorValue)",
+    "format": "+0.0%;-0.0%;0.0%"
+  },
+  {
+    "folder": "1 Market Analysis",
+    "name": "Destination Share %",
+    "dax": "DIVIDE([Total Tourists], CALCULATE([Total Tourists], ALLSELECTED(Tourism[City]), ALLSELECTED(Tourism[Country])))",
+    "format": "0.0%"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Total Revenue",
+    "dax": "SUM(Tourism[Tourism Revenue USD])",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Avg Occupancy %",
+    "dax": "AVERAGE(Tourism[Hotel Occupancy Rate]) / 100",
+    "format": "0.0%"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Avg Room Price",
+    "dax": "AVERAGE(Tourism[Average Room Price USD])",
+    "format": "\\$#,0.00"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "RevPAR",
+    "dax": "AVERAGEX(Tourism, Tourism[Average Room Price USD] * Tourism[Hotel Occupancy Rate] / 100)",
+    "format": "\\$#,0.00"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Revenue YoY %",
+    "dax": "VAR SelectedYear = MAX(Tourism[Year])\nVAR CurrentValue = CALCULATE([Total Revenue], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear)\nVAR PriorValue = CALCULATE([Total Revenue], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear - 1)\nRETURN\n    DIVIDE(CurrentValue - PriorValue, PriorValue)",
+    "format": "+0.0%;-0.0%;0.0%"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Revenue Actual",
+    "dax": "IF(MAX(DimDate[Period Type]) = \"Actual\", [Total Revenue])",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Revenue Trend",
+    "dax": "VAR Points =\n    CALCULATETABLE(\n        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Total Revenue]),\n        REMOVEFILTERS(DimDate),\n        DimDate[Period Type] = \"Actual\"\n    )\nVAR Fit = FILTER(Points, NOT ISBLANK([@y]))\nVAR n = COUNTROWS(Fit)\nVAR SumX = SUMX(Fit, DimDate[Month Index])\nVAR SumY = SUMX(Fit, [@y])\nVAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])\nVAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)\nVAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)\nVAR Intercept = DIVIDE(SumY - Slope * SumX, n)\nVAR x = MAX(DimDate[Month Index])\nRETURN\n    IF(n > 1 && HASONEVALUE(DimDate[Year Month]), Intercept + Slope * x)",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Revenue Forecast",
+    "dax": "VAR Points =\n    CALCULATETABLE(\n        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Total Revenue]),\n        REMOVEFILTERS(DimDate),\n        DimDate[Period Type] = \"Actual\"\n    )\nVAR Fit = FILTER(Points, NOT ISBLANK([@y]))\nVAR n = COUNTROWS(Fit)\nVAR SumX = SUMX(Fit, DimDate[Month Index])\nVAR SumY = SUMX(Fit, [@y])\nVAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])\nVAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)\nVAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)\nVAR Intercept = DIVIDE(SumY - Slope * SumX, n)\nVAR x = MAX(DimDate[Month Index])\nVAR m = MAX(DimDate[Month Number])\nVAR MonthAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\", DimDate[Month Number] = m)\nVAR OverallAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\")\nVAR SeasonalIndex = DIVIDE(MonthAvg, OverallAvg, 1)\nRETURN\n    IF(n > 1 && HASONEVALUE(DimDate[Year Month]) && MAX(DimDate[Period Type]) = \"Forecast\", (Intercept + Slope * x) * SeasonalIndex)",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "2025 Revenue Forecast",
+    "dax": "SUMX(\n    CALCULATETABLE(VALUES(DimDate[Year Month]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Forecast\"),\n    VAR CurrentMonth = DimDate[Year Month]\n    RETURN\n        CALCULATE([Revenue Forecast], REMOVEFILTERS(DimDate), DimDate[Year Month] = CurrentMonth)\n)",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Revenue 3M Moving Avg",
+    "dax": "VAR CurrentIndex = MAX(DimDate[Month Index])\nRETURN\n    IF(\n        HASONEVALUE(DimDate[Year Month]) && MAX(DimDate[Period Type]) = \"Actual\",\n        CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Month Index] > CurrentIndex - 3, DimDate[Month Index] <= CurrentIndex)\n    )",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Occupancy Actual",
+    "dax": "IF(MAX(DimDate[Period Type]) = \"Actual\", [Avg Occupancy %])",
+    "format": "0.0%"
+  },
+  {
+    "folder": "2 Revenue Forecasting",
+    "name": "Occupancy Forecast",
+    "dax": "VAR Points =\n    CALCULATETABLE(\n        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Avg Occupancy %]),\n        REMOVEFILTERS(DimDate),\n        DimDate[Period Type] = \"Actual\"\n    )\nVAR Fit = FILTER(Points, NOT ISBLANK([@y]))\nVAR n = COUNTROWS(Fit)\nVAR SumX = SUMX(Fit, DimDate[Month Index])\nVAR SumY = SUMX(Fit, [@y])\nVAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])\nVAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)\nVAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)\nVAR Intercept = DIVIDE(SumY - Slope * SumX, n)\nVAR x = MAX(DimDate[Month Index])\nVAR m = MAX(DimDate[Month Number])\nVAR MonthAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Avg Occupancy %]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\", DimDate[Month Number] = m)\nVAR OverallAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Avg Occupancy %]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\")\nVAR SeasonalIndex = DIVIDE(MonthAvg, OverallAvg, 1)\nRETURN\n    IF(n > 1 && HASONEVALUE(DimDate[Year Month]), MIN(MAX((Intercept + Slope * x) * SeasonalIndex, 0), 1))",
+    "format": "0.0%"
+  },
+  {
+    "folder": "3 Hospitality Insights",
+    "name": "Total Visitor Spend",
+    "dax": "SUMX(Tourism, Tourism[Number of Tourists] * Tourism[Tourist Spending USD])",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "3 Hospitality Insights",
+    "name": "Avg Spend per Tourist",
+    "dax": "DIVIDE([Total Visitor Spend], [Total Tourists])",
+    "format": "\\$#,0.00"
+  },
+  {
+    "folder": "3 Hospitality Insights",
+    "name": "Spend per Night",
+    "dax": "DIVIDE([Total Visitor Spend], [Tourist Nights])",
+    "format": "\\$#,0.00"
+  },
+  {
+    "folder": "3 Hospitality Insights",
+    "name": "Avg Hotels per City",
+    "dax": "AVERAGE(Tourism[Number of Hotels])",
+    "format": "#,0"
+  },
+  {
+    "folder": "3 Hospitality Insights",
+    "name": "Spend Share %",
+    "dax": "DIVIDE([Total Visitor Spend], CALCULATE([Total Visitor Spend], ALLSELECTED(Tourism[Hotel Rating])))",
+    "format": "0.0%"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Tourism Employment",
+    "dax": "SUM(Tourism[Employment in Tourism])",
+    "format": "#,0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Avg GDP Contribution %",
+    "dax": "AVERAGE(Tourism[Contribution to GDP Percent]) / 100",
+    "format": "0.0%"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Eco-Tourism Revenue",
+    "dax": "SUM(Tourism[Eco Tourism Revenue USD])",
+    "format": "\\$#,0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Eco-Tourism Share %",
+    "dax": "DIVIDE([Eco-Tourism Revenue], [Total Revenue])",
+    "format": "0.0%"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Carbon Footprint (t)",
+    "dax": "SUM(Tourism[Carbon Footprint kg]) / 1000",
+    "format": "#,0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Carbon per Tourist (kg)",
+    "dax": "DIVIDE(SUM(Tourism[Carbon Footprint kg]), [Total Tourists])",
+    "format": "#,0.0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Avg Infrastructure Quality",
+    "dax": "AVERAGE(Tourism[Transport Infrastructure Quality])",
+    "format": "0.0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Avg Waste Management",
+    "dax": "AVERAGE(Tourism[Waste Management Rating])",
+    "format": "0.0"
+  },
+  {
+    "folder": "4 Tourism Policy",
+    "name": "Jobs per 1K Tourists",
+    "dax": "DIVIDE([Tourism Employment], [Total Tourists]) * 1000",
+    "format": "#,0.0"
+  }
+]

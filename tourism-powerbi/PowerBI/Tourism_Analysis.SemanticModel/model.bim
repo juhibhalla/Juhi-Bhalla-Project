@@ -1,0 +1,731 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "Tourism",
+        "lineageTag": "4d498e10-28b5-5603-887d-2492790c1b37",
+        "columns": [
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country",
+            "summarizeBy": "none",
+            "lineageTag": "95a76602-99eb-597b-9058-3f1bb5f02e4f",
+            "dataCategory": "Country"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "summarizeBy": "none",
+            "lineageTag": "4b08073b-2c71-5b40-a253-6a2db269f137",
+            "dataCategory": "City"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "lineageTag": "f4c1c6be-479c-5996-b7e3-fb9358f95fe8",
+            "formatString": "0",
+            "isHidden": true
+          },
+          {
+            "name": "Month",
+            "dataType": "int64",
+            "sourceColumn": "Month",
+            "summarizeBy": "none",
+            "lineageTag": "bcd77cc3-36a6-5a55-9f10-077032887145",
+            "formatString": "0",
+            "isHidden": true
+          },
+          {
+            "name": "Number of Tourists",
+            "dataType": "int64",
+            "sourceColumn": "Number of Tourists",
+            "summarizeBy": "sum",
+            "lineageTag": "28cd85fb-e187-5721-9839-1b1d7a6b89e5",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Purpose of Visit",
+            "dataType": "string",
+            "sourceColumn": "Purpose of Visit",
+            "summarizeBy": "none",
+            "lineageTag": "a9f49959-a5b6-5e1d-a1f5-7efc7fa401a5"
+          },
+          {
+            "name": "Average Length of Stay",
+            "dataType": "double",
+            "sourceColumn": "Average Length of Stay",
+            "summarizeBy": "average",
+            "lineageTag": "6b0820cb-75ce-5a2f-8b32-e6b222fc4182",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Tourist Spending USD",
+            "dataType": "double",
+            "sourceColumn": "Tourist Spending USD",
+            "summarizeBy": "average",
+            "lineageTag": "04231276-bc09-5f60-98dd-4d286a6e0905",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Hotel Occupancy Rate",
+            "dataType": "double",
+            "sourceColumn": "Hotel Occupancy Rate",
+            "summarizeBy": "average",
+            "lineageTag": "2425355f-8d04-5364-a589-64a860cb5149",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Number of Hotels",
+            "dataType": "int64",
+            "sourceColumn": "Number of Hotels",
+            "summarizeBy": "sum",
+            "lineageTag": "cf067e84-f6d6-5312-86e8-bc82f3804491",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Hotel Rating",
+            "dataType": "string",
+            "sourceColumn": "Hotel Rating",
+            "summarizeBy": "none",
+            "lineageTag": "1c831c30-8543-516a-afca-17c906a3b549",
+            "sortByColumn": "Rating Order"
+          },
+          {
+            "name": "Average Room Price USD",
+            "dataType": "double",
+            "sourceColumn": "Average Room Price USD",
+            "summarizeBy": "average",
+            "lineageTag": "eb80b866-a041-59aa-9a1b-c853c4f28183",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Tourism Revenue USD",
+            "dataType": "double",
+            "sourceColumn": "Tourism Revenue USD",
+            "summarizeBy": "sum",
+            "lineageTag": "68894618-ec69-50db-b2c7-5ea759d30906",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Employment in Tourism",
+            "dataType": "int64",
+            "sourceColumn": "Employment in Tourism",
+            "summarizeBy": "sum",
+            "lineageTag": "befdc11e-7f6c-59a5-97f2-b154a962a790",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Contribution to GDP Percent",
+            "dataType": "double",
+            "sourceColumn": "Contribution to GDP Percent",
+            "summarizeBy": "average",
+            "lineageTag": "00aa1e96-b8a9-5c67-a20b-3e0b8f03d010",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Number of Flights",
+            "dataType": "int64",
+            "sourceColumn": "Number of Flights",
+            "summarizeBy": "sum",
+            "lineageTag": "c781545e-67de-5630-a23f-a7651a689a3c",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Airport Passenger Traffic",
+            "dataType": "int64",
+            "sourceColumn": "Airport Passenger Traffic",
+            "summarizeBy": "sum",
+            "lineageTag": "e609e812-b697-547e-91f6-dcf0fa498bf3",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Transport Infrastructure Quality",
+            "dataType": "double",
+            "sourceColumn": "Transport Infrastructure Quality",
+            "summarizeBy": "average",
+            "lineageTag": "4c0dd4ac-529b-5208-8f68-597dc994d831",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Eco Tourism Revenue USD",
+            "dataType": "double",
+            "sourceColumn": "Eco Tourism Revenue USD",
+            "summarizeBy": "sum",
+            "lineageTag": "5b643800-ec38-5bab-b7f8-c88f3dcf2d20",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Carbon Footprint kg",
+            "dataType": "double",
+            "sourceColumn": "Carbon Footprint kg",
+            "summarizeBy": "sum",
+            "lineageTag": "e82b11ce-7efb-5823-a200-077a081b2f74",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Waste Management Rating",
+            "dataType": "double",
+            "sourceColumn": "Waste Management Rating",
+            "summarizeBy": "average",
+            "lineageTag": "ef85e829-f079-5402-9e17-03818a1a1e63",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Tourist Satisfaction Score",
+            "dataType": "double",
+            "sourceColumn": "Tourist Satisfaction Score",
+            "summarizeBy": "average",
+            "lineageTag": "685ba097-2d77-52d3-8543-930c60d82686",
+            "formatString": "#,0.00"
+          },
+          {
+            "name": "Number of Online Reviews",
+            "dataType": "int64",
+            "sourceColumn": "Number of Online Reviews",
+            "summarizeBy": "sum",
+            "lineageTag": "39189240-a993-5201-9afe-fca35f918975",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "summarizeBy": "none",
+            "lineageTag": "b0b5299c-4dd0-597d-a6f3-959cd8f69215",
+            "formatString": "yyyy-mm-dd",
+            "isHidden": true
+          },
+          {
+            "name": "Rating Order",
+            "dataType": "int64",
+            "sourceColumn": "Rating Order",
+            "summarizeBy": "none",
+            "lineageTag": "54707aad-5f13-54dd-97b1-d26ab4793b35",
+            "formatString": "0",
+            "isHidden": true
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Tourists",
+            "expression": "SUM(Tourism[Number of Tourists])",
+            "formatString": "#,0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "e1161c6a-4e65-557c-b84d-f758c2e72f48"
+          },
+          {
+            "name": "Tourist Nights",
+            "expression": "SUMX(Tourism, Tourism[Number of Tourists] * Tourism[Average Length of Stay])",
+            "formatString": "#,0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "6868089e-d682-5d59-a50a-196b323a4359"
+          },
+          {
+            "name": "Avg Length of Stay",
+            "expression": "DIVIDE([Tourist Nights], [Total Tourists])",
+            "formatString": "0.0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "00a2675b-4a96-5dcd-9d43-2fb713a91daf"
+          },
+          {
+            "name": "Avg Satisfaction",
+            "expression": "AVERAGE(Tourism[Tourist Satisfaction Score])",
+            "formatString": "0.00",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "d469a997-8382-51f9-817a-f2c3e9069705"
+          },
+          {
+            "name": "Online Reviews",
+            "expression": "SUM(Tourism[Number of Online Reviews])",
+            "formatString": "#,0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "d707de34-87de-5179-a17a-82d5c1aab2ec"
+          },
+          {
+            "name": "Airport Passenger Traffic",
+            "expression": "SUM(Tourism[Airport Passenger Traffic])",
+            "formatString": "#,0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "a73ca148-c1ee-51a9-a8d3-37562eeee450"
+          },
+          {
+            "name": "Total Flights",
+            "expression": "SUM(Tourism[Number of Flights])",
+            "formatString": "#,0",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "0f6563eb-2d15-5933-a49c-e3968da65c3a"
+          },
+          {
+            "name": "Tourists YoY %",
+            "expression": [
+              "VAR SelectedYear = MAX(Tourism[Year])",
+              "VAR CurrentValue = CALCULATE([Total Tourists], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear)",
+              "VAR PriorValue = CALCULATE([Total Tourists], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear - 1)",
+              "RETURN",
+              "    DIVIDE(CurrentValue - PriorValue, PriorValue)"
+            ],
+            "formatString": "+0.0%;-0.0%;0.0%",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "66dc4df0-9df0-5632-b927-ee0318fcda0d"
+          },
+          {
+            "name": "Destination Share %",
+            "expression": "DIVIDE([Total Tourists], CALCULATE([Total Tourists], ALLSELECTED(Tourism[City]), ALLSELECTED(Tourism[Country])))",
+            "formatString": "0.0%",
+            "displayFolder": "1 Market Analysis",
+            "lineageTag": "9b250892-6fec-528f-947d-036d548afdd9"
+          },
+          {
+            "name": "Total Revenue",
+            "expression": "SUM(Tourism[Tourism Revenue USD])",
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "eb0056da-725f-5f6c-99d7-9d241ff84ba4"
+          },
+          {
+            "name": "Avg Occupancy %",
+            "expression": "AVERAGE(Tourism[Hotel Occupancy Rate]) / 100",
+            "formatString": "0.0%",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "c1e61416-2713-5326-adaa-906c6b8ed6e7"
+          },
+          {
+            "name": "Avg Room Price",
+            "expression": "AVERAGE(Tourism[Average Room Price USD])",
+            "formatString": "\\$#,0.00",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "7dc6ec2f-a4ee-5405-b950-84f94accfee5"
+          },
+          {
+            "name": "RevPAR",
+            "expression": "AVERAGEX(Tourism, Tourism[Average Room Price USD] * Tourism[Hotel Occupancy Rate] / 100)",
+            "formatString": "\\$#,0.00",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "1c124c15-9708-5fef-98fb-c5c348d3cb8b"
+          },
+          {
+            "name": "Revenue YoY %",
+            "expression": [
+              "VAR SelectedYear = MAX(Tourism[Year])",
+              "VAR CurrentValue = CALCULATE([Total Revenue], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear)",
+              "VAR PriorValue = CALCULATE([Total Revenue], REMOVEFILTERS(DimDate), DimDate[Year] = SelectedYear - 1)",
+              "RETURN",
+              "    DIVIDE(CurrentValue - PriorValue, PriorValue)"
+            ],
+            "formatString": "+0.0%;-0.0%;0.0%",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "d3826b4d-24e4-5d35-a50a-3cd54c10660a"
+          },
+          {
+            "name": "Revenue Actual",
+            "expression": "IF(MAX(DimDate[Period Type]) = \"Actual\", [Total Revenue])",
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "ecf1d8fb-f6ca-5d56-82c1-0f29590795b4"
+          },
+          {
+            "name": "Revenue Trend",
+            "expression": [
+              "VAR Points =",
+              "    CALCULATETABLE(",
+              "        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Total Revenue]),",
+              "        REMOVEFILTERS(DimDate),",
+              "        DimDate[Period Type] = \"Actual\"",
+              "    )",
+              "VAR Fit = FILTER(Points, NOT ISBLANK([@y]))",
+              "VAR n = COUNTROWS(Fit)",
+              "VAR SumX = SUMX(Fit, DimDate[Month Index])",
+              "VAR SumY = SUMX(Fit, [@y])",
+              "VAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])",
+              "VAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)",
+              "VAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)",
+              "VAR Intercept = DIVIDE(SumY - Slope * SumX, n)",
+              "VAR x = MAX(DimDate[Month Index])",
+              "RETURN",
+              "    IF(n > 1 && HASONEVALUE(DimDate[Year Month]), Intercept + Slope * x)"
+            ],
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "86176cb0-d8be-5588-a3ca-bd865390cf93"
+          },
+          {
+            "name": "Revenue Forecast",
+            "expression": [
+              "VAR Points =",
+              "    CALCULATETABLE(",
+              "        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Total Revenue]),",
+              "        REMOVEFILTERS(DimDate),",
+              "        DimDate[Period Type] = \"Actual\"",
+              "    )",
+              "VAR Fit = FILTER(Points, NOT ISBLANK([@y]))",
+              "VAR n = COUNTROWS(Fit)",
+              "VAR SumX = SUMX(Fit, DimDate[Month Index])",
+              "VAR SumY = SUMX(Fit, [@y])",
+              "VAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])",
+              "VAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)",
+              "VAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)",
+              "VAR Intercept = DIVIDE(SumY - Slope * SumX, n)",
+              "VAR x = MAX(DimDate[Month Index])",
+              "VAR m = MAX(DimDate[Month Number])",
+              "VAR MonthAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\", DimDate[Month Number] = m)",
+              "VAR OverallAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\")",
+              "VAR SeasonalIndex = DIVIDE(MonthAvg, OverallAvg, 1)",
+              "RETURN",
+              "    IF(n > 1 && HASONEVALUE(DimDate[Year Month]) && MAX(DimDate[Period Type]) = \"Forecast\", (Intercept + Slope * x) * SeasonalIndex)"
+            ],
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "867967ea-23aa-5f14-8485-3a2ee89076d8"
+          },
+          {
+            "name": "2025 Revenue Forecast",
+            "expression": [
+              "SUMX(",
+              "    CALCULATETABLE(VALUES(DimDate[Year Month]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Forecast\"),",
+              "    VAR CurrentMonth = DimDate[Year Month]",
+              "    RETURN",
+              "        CALCULATE([Revenue Forecast], REMOVEFILTERS(DimDate), DimDate[Year Month] = CurrentMonth)",
+              ")"
+            ],
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "c774e754-5336-5512-97c2-72a3947c8f3f"
+          },
+          {
+            "name": "Revenue 3M Moving Avg",
+            "expression": [
+              "VAR CurrentIndex = MAX(DimDate[Month Index])",
+              "RETURN",
+              "    IF(",
+              "        HASONEVALUE(DimDate[Year Month]) && MAX(DimDate[Period Type]) = \"Actual\",",
+              "        CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Total Revenue]), REMOVEFILTERS(DimDate), DimDate[Month Index] > CurrentIndex - 3, DimDate[Month Index] <= CurrentIndex)",
+              "    )"
+            ],
+            "formatString": "\\$#,0",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "181d8560-3b1e-5ca5-aec6-d0ad6448c792"
+          },
+          {
+            "name": "Occupancy Actual",
+            "expression": "IF(MAX(DimDate[Period Type]) = \"Actual\", [Avg Occupancy %])",
+            "formatString": "0.0%",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "050e004b-35de-5fc4-945d-d0ed6afc5004"
+          },
+          {
+            "name": "Occupancy Forecast",
+            "expression": [
+              "VAR Points =",
+              "    CALCULATETABLE(",
+              "        ADDCOLUMNS(VALUES(DimDate[Month Index]), \"@y\", [Avg Occupancy %]),",
+              "        REMOVEFILTERS(DimDate),",
+              "        DimDate[Period Type] = \"Actual\"",
+              "    )",
+              "VAR Fit = FILTER(Points, NOT ISBLANK([@y]))",
+              "VAR n = COUNTROWS(Fit)",
+              "VAR SumX = SUMX(Fit, DimDate[Month Index])",
+              "VAR SumY = SUMX(Fit, [@y])",
+              "VAR SumXY = SUMX(Fit, DimDate[Month Index] * [@y])",
+              "VAR SumXX = SUMX(Fit, DimDate[Month Index] ^ 2)",
+              "VAR Slope = DIVIDE(n * SumXY - SumX * SumY, n * SumXX - SumX ^ 2)",
+              "VAR Intercept = DIVIDE(SumY - Slope * SumX, n)",
+              "VAR x = MAX(DimDate[Month Index])",
+              "VAR m = MAX(DimDate[Month Number])",
+              "VAR MonthAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Avg Occupancy %]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\", DimDate[Month Number] = m)",
+              "VAR OverallAvg = CALCULATE(AVERAGEX(VALUES(DimDate[Month Index]), [Avg Occupancy %]), REMOVEFILTERS(DimDate), DimDate[Period Type] = \"Actual\")",
+              "VAR SeasonalIndex = DIVIDE(MonthAvg, OverallAvg, 1)",
+              "RETURN",
+              "    IF(n > 1 && HASONEVALUE(DimDate[Year Month]), MIN(MAX((Intercept + Slope * x) * SeasonalIndex, 0), 1))"
+            ],
+            "formatString": "0.0%",
+            "displayFolder": "2 Revenue Forecasting",
+            "lineageTag": "d81b6cfb-3b6c-5dd6-8ef2-c0f180d949ee"
+          },
+          {
+            "name": "Total Visitor Spend",
+            "expression": "SUMX(Tourism, Tourism[Number of Tourists] * Tourism[Tourist Spending USD])",
+            "formatString": "\\$#,0",
+            "displayFolder": "3 Hospitality Insights",
+            "lineageTag": "dfa4875f-32f4-58bf-af04-5d833033e6c1"
+          },
+          {
+            "name": "Avg Spend per Tourist",
+            "expression": "DIVIDE([Total Visitor Spend], [Total Tourists])",
+            "formatString": "\\$#,0.00",
+            "displayFolder": "3 Hospitality Insights",
+            "lineageTag": "de38b6f6-963d-5523-a360-6da0383334b2"
+          },
+          {
+            "name": "Spend per Night",
+            "expression": "DIVIDE([Total Visitor Spend], [Tourist Nights])",
+            "formatString": "\\$#,0.00",
+            "displayFolder": "3 Hospitality Insights",
+            "lineageTag": "13f6e9f3-caba-577a-bbe9-8be5236fbe9c"
+          },
+          {
+            "name": "Avg Hotels per City",
+            "expression": "AVERAGE(Tourism[Number of Hotels])",
+            "formatString": "#,0",
+            "displayFolder": "3 Hospitality Insights",
+            "lineageTag": "02271ae6-585c-55ef-9d3a-2971eaa37df0"
+          },
+          {
+            "name": "Spend Share %",
+            "expression": "DIVIDE([Total Visitor Spend], CALCULATE([Total Visitor Spend], ALLSELECTED(Tourism[Hotel Rating])))",
+            "formatString": "0.0%",
+            "displayFolder": "3 Hospitality Insights",
+            "lineageTag": "7c809a42-292e-57b6-b5a7-dc7ce3a1c40d"
+          },
+          {
+            "name": "Tourism Employment",
+            "expression": "SUM(Tourism[Employment in Tourism])",
+            "formatString": "#,0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "cc39a6e8-d2bd-50fb-b187-efae31d547ed"
+          },
+          {
+            "name": "Avg GDP Contribution %",
+            "expression": "AVERAGE(Tourism[Contribution to GDP Percent]) / 100",
+            "formatString": "0.0%",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "a3f7619a-1089-5977-a649-5679dedf61ff"
+          },
+          {
+            "name": "Eco-Tourism Revenue",
+            "expression": "SUM(Tourism[Eco Tourism Revenue USD])",
+            "formatString": "\\$#,0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "ce883f6c-8e2e-5918-bddc-4b2a996971d5"
+          },
+          {
+            "name": "Eco-Tourism Share %",
+            "expression": "DIVIDE([Eco-Tourism Revenue], [Total Revenue])",
+            "formatString": "0.0%",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "f48d4bc2-3c32-5836-84fe-a4d30b257f2d"
+          },
+          {
+            "name": "Carbon Footprint (t)",
+            "expression": "SUM(Tourism[Carbon Footprint kg]) / 1000",
+            "formatString": "#,0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "ef00ab83-fc3f-5bf8-8dc4-a276a8ed908a"
+          },
+          {
+            "name": "Carbon per Tourist (kg)",
+            "expression": "DIVIDE(SUM(Tourism[Carbon Footprint kg]), [Total Tourists])",
+            "formatString": "#,0.0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "06cf407d-3542-584a-a972-778a1b61b0d3"
+          },
+          {
+            "name": "Avg Infrastructure Quality",
+            "expression": "AVERAGE(Tourism[Transport Infrastructure Quality])",
+            "formatString": "0.0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "8598156b-b0d9-59e2-956d-c698b7b20cd4"
+          },
+          {
+            "name": "Avg Waste Management",
+            "expression": "AVERAGE(Tourism[Waste Management Rating])",
+            "formatString": "0.0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "d68b0234-b378-59de-8d6f-7fb1e7dcb382"
+          },
+          {
+            "name": "Jobs per 1K Tourists",
+            "expression": "DIVIDE([Tourism Employment], [Total Tourists]) * 1000",
+            "formatString": "#,0.0",
+            "displayFolder": "4 Tourism Policy",
+            "lineageTag": "b1a7a26c-49a2-53d7-9c85-86e1ab97e818"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Tourism",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(CsvFilePath), [Delimiter = \",\", Columns = 23, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),",
+                "    PromotedHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),",
+                "    ChangedTypes = Table.TransformColumnTypes(PromotedHeaders, {{\"Country\", text}, {\"City\", text}, {\"Year\", Int64.Type}, {\"Month\", Int64.Type}, {\"Number_of_Tourists\", Int64.Type}, {\"Purpose_of_Visit\", text}, {\"Average_Length_of_Stay\", number}, {\"Tourist_Spending_USD\", number}, {\"Hotel_Occupancy_Rate\", number}, {\"Number_of_Hotels\", Int64.Type}, {\"Hotel_Rating\", text}, {\"Average_Room_Price_USD\", number}, {\"Tourism_Revenue_USD\", number}, {\"Employment_in_Tourism\", Int64.Type}, {\"Contribution_to_GDP_Percent\", number}, {\"Number_of_Flights\", Int64.Type}, {\"Airport_Passenger_Traffic\", Int64.Type}, {\"Transport_Infrastructure_Quality\", number}, {\"Eco_Tourism_Revenue_USD\", number}, {\"Carbon_Footprint_kg\", number}, {\"Waste_Management_Rating\", number}, {\"Tourist_Satisfaction_Score\", number}, {\"Number_of_Online_Reviews\", Int64.Type}}, \"en-US\"),",
+                "    TrimmedText = Table.TransformColumns(ChangedTypes, {{\"Country\", Text.Trim, type text}, {\"City\", Text.Trim, type text}, {\"Purpose_of_Visit\", Text.Trim, type text}, {\"Hotel_Rating\", Text.Trim, type text}}),",
+                "    RemovedBlankRows = Table.SelectRows(TrimmedText, each [Country] <> null and [Year] <> null and [Month] <> null),",
+                "    RenamedColumns = Table.TransformColumnNames(RemovedBlankRows, each Text.Replace(_, \"_\", \" \")),",
+                "    AddedDate = Table.AddColumn(RenamedColumns, \"Date\", each #date([Year], [Month], 1), type date),",
+                "    AddedRatingOrder = Table.AddColumn(AddedDate, \"Rating Order\", each if [Hotel Rating] = \"Unrated\" then 0 else Number.From(Text.Start([Hotel Rating], 1)), Int64.Type)",
+                "in",
+                "    AddedRatingOrder"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "DimDate",
+        "lineageTag": "5661efb0-a216-5846-8bab-ae1dcd5cea1f",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "summarizeBy": "none",
+            "lineageTag": "cde3c911-0f63-523f-871f-cd12f48e8a9e",
+            "formatString": "mmm yyyy"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none",
+            "lineageTag": "99f07f65-940b-518d-8c7f-61299def9c40",
+            "formatString": "0"
+          },
+          {
+            "name": "Month Number",
+            "dataType": "int64",
+            "sourceColumn": "Month Number",
+            "summarizeBy": "none",
+            "lineageTag": "e079341d-ad0e-5463-8cde-2f8ff38bf875",
+            "formatString": "0",
+            "isHidden": true
+          },
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month",
+            "summarizeBy": "none",
+            "lineageTag": "edbd4d32-5ea9-5499-852d-3bb58749683b",
+            "sortByColumn": "Month Number"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter",
+            "summarizeBy": "none",
+            "lineageTag": "998fe20f-5e28-592f-9056-ff690791b394"
+          },
+          {
+            "name": "Year Month",
+            "dataType": "string",
+            "sourceColumn": "Year Month",
+            "summarizeBy": "none",
+            "lineageTag": "b3c54928-1c1e-5c60-9458-e5fe6e880df1",
+            "sortByColumn": "Month Index"
+          },
+          {
+            "name": "Month Index",
+            "dataType": "int64",
+            "sourceColumn": "Month Index",
+            "summarizeBy": "none",
+            "lineageTag": "3332fd01-b7ac-5409-a4e8-e4783fa66848",
+            "formatString": "0",
+            "isHidden": true
+          },
+          {
+            "name": "Period Type",
+            "dataType": "string",
+            "sourceColumn": "Period Type",
+            "summarizeBy": "none",
+            "lineageTag": "513f5052-df44-57f5-a480-f2f168e9ae2d"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimDate",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    StartDate = #date(2020, 1, 1),",
+                "    EndDate = #date(2025, 12, 1),",
+                "    MonthList = List.Generate(() => StartDate, each _ <= EndDate, each Date.AddMonths(_, 1)),",
+                "    DateTable = Table.FromList(MonthList, Splitter.SplitByNothing(), {\"Date\"}),",
+                "    TypedDate = Table.TransformColumnTypes(DateTable, {{\"Date\", type date}}),",
+                "    AddedYear = Table.AddColumn(TypedDate, \"Year\", each Date.Year([Date]), Int64.Type),",
+                "    AddedMonthNumber = Table.AddColumn(AddedYear, \"Month Number\", each Date.Month([Date]), Int64.Type),",
+                "    AddedMonth = Table.AddColumn(AddedMonthNumber, \"Month\", each Date.ToText([Date], \"MMM\", \"en-US\"), type text),",
+                "    AddedQuarter = Table.AddColumn(AddedMonth, \"Quarter\", each \"Q\" & Text.From(Date.QuarterOfYear([Date])), type text),",
+                "    AddedYearMonth = Table.AddColumn(AddedQuarter, \"Year Month\", each Date.ToText([Date], \"yyyy-MM\", \"en-US\"), type text),",
+                "    AddedMonthIndex = Table.AddColumn(AddedYearMonth, \"Month Index\", each (Date.Year([Date]) - 2020) * 12 + Date.Month([Date]), Int64.Type),",
+                "    AddedPeriodType = Table.AddColumn(AddedMonthIndex, \"Period Type\", each if [Date] <= #date(2024, 12, 1) then \"Actual\" else \"Forecast\", type text)",
+                "in",
+                "    AddedPeriodType"
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "2acdc5cd-1b03-5905-8b6e-da8c117bad7d",
+        "fromTable": "Tourism",
+        "fromColumn": "Date",
+        "toTable": "DimDate",
+        "toColumn": "Date"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "CsvFilePath",
+        "kind": "m",
+        "expression": "\"C:\\PowerBI\\Tourism_Hospitality_Industry_Analysis.csv\" meta [IsParameterQuery = true, Type = \"Text\", IsParameterQueryRequired = true]",
+        "lineageTag": "086e6e77-8c2f-55d7-91bc-9b7e78e73d9f",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Text"
+          },
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"CsvFilePath\",\"Tourism\",\"DimDate\"]"
+      },
+      {
+        "name": "PBIDesktopVersion",
+        "value": "2.130.0"
+      }
+    ]
+  }
+}

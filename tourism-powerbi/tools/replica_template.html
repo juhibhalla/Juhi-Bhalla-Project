@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tourism Analysis Report</title>
+<style>
+:root{--navy:#0B3C5D;--bg:#F3F6FA;--card:#FFFFFF;--line:#E1E6EF;--ink:#1B2A3A;--muted:#5B6B7F;--blue:#1F77B4;--accent:#F28E2B}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#d9dee6;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;left:0;top:0;width:1280px;height:760px;transform-origin:0 0}
+#canvas{position:absolute;left:0;top:0;width:1280px;height:720px;background:var(--bg);overflow:hidden}
+.v{position:absolute;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 6px rgba(20,40,70,.08);overflow:hidden}
+.v .t{font-size:13px;font-weight:600;padding:8px 10px 0 12px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v .c{position:absolute;left:4px;right:4px;top:28px;bottom:4px}
+.hdr{position:absolute;left:0;top:0;width:1280px;height:64px;background:var(--navy);color:#fff;padding:8px 18px}
+.hdr h1{margin:0;font-size:25px;font-weight:600;letter-spacing:.2px}
+.hdr p{margin:2px 0 0;font-size:13px;color:#CFE3F2}
+.sl{position:absolute;height:52px;background:transparent}
+.sl label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin:0 0 3px 2px}
+.sl select{width:100%;height:28px;border:1px solid #b9c3d1;border-radius:4px;background:#fff;font-size:13px;padding:0 6px;color:var(--ink)}
+.card{border-color:var(--blue)}
+.card .val{font-size:28px;font-weight:600;color:var(--navy);text-align:center;margin-top:16px;letter-spacing:-.3px}
+.card .lab{font-size:12.5px;color:var(--muted);text-align:center;margin-top:4px}
+.card .val.pos{color:#2CA58D}.card .val.neg{color:#E15759}
+table.tb{border-collapse:collapse;width:100%;font-size:11px}
+table.tb th{position:sticky;top:0;background:#fff;text-align:right;padding:4px 5px;border-bottom:2px solid var(--blue);font-weight:600;color:var(--ink)}
+table.tb th:first-child,table.tb td:first-child{text-align:left}
+table.tb td{padding:4px 5px;text-align:right;border-bottom:1px solid #eef1f6}
+table.tb tr:nth-child(even) td{background:#f7f9fc}
+table.tb tr.tot td{font-weight:700;border-top:2px solid var(--ink);background:#fff}
+table.tb tr.sel td{background:#d7e8f6}
+table.tb tbody tr{cursor:pointer}
+.scroll{position:absolute;left:4px;right:4px;top:30px;bottom:4px;overflow:auto}
+#tabs{position:absolute;left:0;top:720px;width:1280px;height:40px;background:#eaecef;border-top:1px solid #c8cdd5;display:flex;align-items:flex-end;padding-left:12px;gap:2px}
+#tabs button{height:32px;border:1px solid #c8cdd5;border-bottom:none;background:#f6f7f9;padding:0 18px;font-size:13px;color:#444;cursor:pointer;border-radius:4px 4px 0 0;font-family:inherit}
+#tabs button.on{background:#fff;color:#111;font-weight:600;box-shadow:inset 0 3px 0 var(--accent)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="canvas"></div><div id="tabs"></div></div>
+<script>__ECHARTS__</script>
+<script>
+const RAW = __DATA__;
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const RATING_ORDER=["Unrated","1-star","2-star","3-star","4-star","5-star"];
+const COLORS=["#1F77B4","#F28E2B","#2CA58D","#E15759","#0B3C5D","#9C755F","#B07AA1","#EDC948","#76B7B2","#FF9DA7"];
+const sum=(r,f)=>r.reduce((a,x)=>a+f(x),0);
+const avg=(r,f)=>r.length?sum(r,f)/r.length:null;
+const div=(a,b)=>b?a/b:null;
+const M={
+  tourists:r=>sum(r,x=>x.t),
+  nights:r=>sum(r,x=>x.t*x.los),
+  alos:r=>div(M.nights(r),M.tourists(r)),
+  sat:r=>avg(r,x=>x.sat),
+  reviews:r=>sum(r,x=>x.rev_n),
+  airport:r=>sum(r,x=>x.air),
+  revenue:r=>sum(r,x=>x.rev),
+  occ:r=>{const a=avg(r,x=>x.occ);return a==null?null:a/100},
+  price:r=>avg(r,x=>x.price),
+  revpar:r=>avg(r,x=>x.price*x.occ/100),
+  revPerTourist:r=>div(M.revenue(r),M.tourists(r)),
+  spend:r=>sum(r,x=>x.t*x.spend),
+  spt:r=>div(M.spend(r),M.tourists(r)),
+  spn:r=>div(M.spend(r),M.nights(r)),
+  emp:r=>sum(r,x=>x.emp),
+  gdp:r=>{const a=avg(r,x=>x.gdp);return a==null?null:a/100},
+  eco:r=>sum(r,x=>x.eco),
+  ecoShare:r=>div(M.eco(r),M.revenue(r)),
+  co2pt:r=>div(sum(r,x=>x.co2),M.tourists(r)),
+  infra:r=>avg(r,x=>x.infra),
+  waste:r=>avg(r,x=>x.waste),
+  jobs:r=>{const v=div(M.emp(r),M.tourists(r));return v==null?null:v*1000}
+};
+const F={
+  n:v=>v==null?"(Blank)":Math.round(v).toLocaleString("en-US"),
+  auto:v=>{if(v==null)return"(Blank)";const a=Math.abs(v);if(a>=1e9)return(v/1e9).toFixed(2)+"bn";if(a>=1e6)return(v/1e6).toFixed(2)+"M";if(a>=1e3)return(v/1e3).toFixed(1)+"K";return v.toFixed(0)},
+  usdAuto:v=>v==null?"(Blank)":"$"+F.auto(v),
+  usd:v=>v==null?"(Blank)":"$"+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),
+  usd0:v=>v==null?"(Blank)":"$"+Math.round(v).toLocaleString("en-US"),
+  d1:v=>v==null?"(Blank)":v.toFixed(1),
+  d2:v=>v==null?"(Blank)":v.toFixed(2),
+  pct:v=>v==null?"(Blank)":(v*100).toFixed(1)+"%",
+  spct:v=>v==null?"(Blank)":(v>=0?"+":"")+(v*100).toFixed(1)+"%"
+};
+const FIELD={year:"y",month:"m",country:"country",city:"city",purpose:"purpose",rating:"rating"};
+const uniq=(k)=>[...new Set(RAW.map(x=>x[k]))].sort((a,b)=>k==="rating"?RATING_ORDER.indexOf(a)-RATING_ORDER.indexOf(b):(a>b?1:a<b?-1:0));
+
+const PAGES=[
+ {id:"market",name:"Market Analysis",title:"Market Analysis",sub:"Travel trends and popular destinations | 2020 - 2024",
+  slicers:[["year","Year"],["country","Country"],["purpose","Purpose of Visit"],["rating","Hotel Rating"]],
+  cards:[["Total Tourists",r=>F.auto(M.tourists(r))],["Tourists YoY %",(r,c)=>yoy(c,M.tourists),"yoy"],["Tourist Nights",r=>F.auto(M.nights(r))],["Avg Length of Stay",r=>F.d1(M.alos(r))],["Avg Satisfaction",r=>F.d2(M.sat(r))],["Airport Passenger Traffic",r=>F.auto(M.airport(r))]],
+  visuals:[
+   {x:10,y:226,w:620,h:238,type:"area",title:"Tourist Arrivals Trend"},
+   {x:640,y:226,w:300,h:238,type:"donut",title:"Tourists by Purpose of Visit",dim:"purpose",m:M.tourists,sort:"desc"},
+   {x:950,y:226,w:320,h:238,type:"column",title:"Seasonality - Tourists by Month",dim:"month",m:M.tourists,color:"#2CA58D"},
+   {x:10,y:476,w:410,h:238,type:"bar",title:"Tourists by Country",dim:"country",m:M.tourists,color:"#1F77B4",fmt:F.auto},
+   {x:430,y:476,w:410,h:238,type:"bar",title:"Most Popular Destinations (Cities)",dim:"city",m:M.tourists,color:"#F28E2B",fmt:F.auto},
+   {x:850,y:476,w:420,h:238,type:"table",title:"Destination Leaderboard",dim:"city",cols:[["City"],["Total Tourists",M.tourists,F.n],["Destination Share %","share",F.pct],["Avg Satisfaction",M.sat,F.d2],["Online Reviews",M.reviews,F.n]]}
+  ]},
+ {id:"revenue",name:"Revenue Forecasting",title:"Revenue Forecasting",sub:"Hotel occupancy and revenue patterns with a 2025 seasonal-trend forecast",
+  slicers:[["country","Country"],["city","City"],["rating","Hotel Rating"],["purpose","Purpose of Visit"]],
+  cards:[["Total Revenue",r=>F.usdAuto(M.revenue(r))],["Revenue YoY %",(r,c)=>yoy(c,M.revenue),"yoy"],["Avg Occupancy %",r=>F.pct(M.occ(r))],["Avg Room Price",r=>F.usd(M.price(r))],["RevPAR",r=>F.usd(M.revpar(r))],["2025 Revenue Forecast",r=>{const s=monthSeries(r,M.revenue);const mod=forecastModel(s);return mod?F.usdAuto(sum(s.filter(d=>d.y>2024),d=>(mod.icpt+mod.slope*d.i)*mod.si[d.m])):"(Blank)"}]],
+  visuals:[
+   {x:10,y:226,w:840,h:238,type:"forecastRevenue",title:"Monthly Revenue - Actual, Trend and 2025 Forecast"},
+   {x:860,y:226,w:410,h:238,type:"comboYear",title:"Annual Revenue vs Occupancy",m1:["Total Revenue",M.revenue,"#1F77B4",F.usdAuto],m2:["Avg Occupancy %",M.occ,"#F28E2B",F.pct]},
+   {x:10,y:476,w:620,h:238,type:"forecastOcc",title:"Hotel Occupancy - Actual vs Forecast"},
+   {x:640,y:476,w:310,h:238,type:"column",title:"Occupancy Seasonality by Month",dim:"month",m:M.occ,color:"#2CA58D",fmt:F.pct,minZero:false},
+   {x:960,y:476,w:310,h:238,type:"matrixYQ",title:"Revenue by Year and Quarter"}
+  ]},
+ {id:"hospitality",name:"Hospitality Insights",title:"Hospitality Business Insights",sub:"Customer preferences and spending habits",
+  slicers:[["year","Year"],["country","Country"],["purpose","Purpose of Visit"],["rating","Hotel Rating"]],
+  cards:[["Total Visitor Spend",r=>F.usdAuto(M.spend(r))],["Avg Spend per Tourist",r=>F.usd(M.spt(r))],["Spend per Night",r=>F.usd(M.spn(r))],["Avg Room Price",r=>F.usd(M.price(r))],["Avg Satisfaction",r=>F.d2(M.sat(r))],["Online Reviews",r=>F.auto(M.reviews(r))]],
+  visuals:[
+   {x:10,y:226,w:420,h:238,type:"combo",title:"Spend per Tourist and Length of Stay by Purpose",dim:"purpose",sort:"desc",m1:["Avg Spend per Tourist",M.spt,"#1F77B4",F.usd0],m2:["Avg Length of Stay",M.alos,"#F28E2B",F.d1]},
+   {x:440,y:226,w:420,h:238,type:"combo",title:"Room Price and Satisfaction by Hotel Rating",dim:"rating",m1:["Avg Room Price",M.price,"#2CA58D",F.usd0],m2:["Avg Satisfaction",M.sat,"#E15759",F.d2]},
+   {x:870,y:226,w:400,h:238,type:"donut",title:"Share of Visitor Spend by Hotel Rating",dim:"rating",m:M.spend,legendRight:true},
+   {x:10,y:476,w:620,h:238,type:"scatter",title:"Value for Money - Room Price vs Satisfaction by City",dim:"city",mx:["Avg Room Price",M.price,F.usd0],my:["Avg Satisfaction",M.sat,F.d2],ms:M.tourists,color:"#1F77B4"},
+   {x:640,y:476,w:630,h:238,type:"matrix",title:"Avg Spend per Tourist - Purpose x Hotel Rating",rows:"purpose",cols:"rating",m:M.spt,fmt:F.usd0}
+  ]},
+ {id:"policy",name:"Tourism Policy",title:"Tourism Policy Evaluation",sub:"Economic contribution, employment, sustainability and infrastructure",
+  slicers:[["year","Year"],["country","Country"],["purpose","Purpose of Visit"]],
+  cards:[["Tourism Employment",r=>F.auto(M.emp(r))],["Avg GDP Contribution %",r=>F.pct(M.gdp(r))],["Eco-Tourism Revenue",r=>F.usdAuto(M.eco(r))],["Eco-Tourism Share %",r=>F.pct(M.ecoShare(r))],["Carbon per Tourist (kg)",r=>F.d1(M.co2pt(r))],["Avg Infrastructure Quality",r=>F.d1(M.infra(r))]],
+  visuals:[
+   {x:10,y:226,w:410,h:238,type:"bar",title:"Tourism Contribution to GDP by Country",dim:"country",m:M.gdp,color:"#0B3C5D",fmt:F.pct},
+   {x:430,y:226,w:420,h:238,type:"scatter",title:"Sustainability - Carbon per Tourist vs Eco-Tourism Share",dim:"country",mx:["Carbon per Tourist (kg)",M.co2pt,F.d1],my:["Eco-Tourism Share %",M.ecoShare,F.pct],ms:M.revenue,color:"#2CA58D"},
+   {x:860,y:226,w:410,h:238,type:"comboYear",title:"Employment and Eco-Tourism Share by Year",m1:["Tourism Employment",M.emp,"#1F77B4",F.auto],m2:["Eco-Tourism Share %",M.ecoShare,"#2CA58D",F.pct]},
+   {x:10,y:476,w:840,h:238,type:"table",title:"Country Policy Scorecard",dim:"country",sortCol:3,cols:[["Country"],["Tourism Employment",M.emp,F.n],["Jobs per 1K Tourists",M.jobs,F.d1],["Avg GDP Contribution %",M.gdp,F.pct],["Eco-Tourism Share %",M.ecoShare,F.pct],["Carbon per Tourist (kg)",M.co2pt,F.d1],["Avg Infrastructure Quality",M.infra,F.d1],["Avg Waste Management",M.waste,F.d1]]},
+   {x:860,y:476,w:410,h:238,type:"bar2",title:"Infrastructure and Waste Management by Country",dim:"country",m1:["Avg Infrastructure Quality",M.infra,"#1F77B4"],m2:["Avg Waste Management",M.waste,"#F28E2B"]}
+  ]}
+];
+
+const state={};
+PAGES.forEach(p=>state[p.id]={sl:{},cross:null});
+let current=0;const charts=[];
+
+function rowsFor(pid,except){
+  const s=state[pid];
+  return RAW.filter(x=>{
+    for(const k in s.sl){if(k===except)continue;const v=s.sl[k];if(v!=null&&v!==""&&String(x[FIELD[k]])!==String(v))return false}
+    if(s.cross&&s.cross.vid!==except){if(String(x[FIELD[s.cross.dim]])!==String(s.cross.val))return false}
+    return true});
+}
+function yoy(ctx,fn){
+  const base=rowsFor(ctx.pid,"year");const sel=state[ctx.pid].sl.year;
+  const inScope=sel?base.filter(x=>String(x.y)===String(sel)):base;
+  if(!inScope.length)return"(Blank)";
+  const y=Math.max(...inScope.map(x=>x.y));
+  const cur=fn(base.filter(x=>x.y===y)),prev=fn(base.filter(x=>x.y===y-1));
+  return prev?F.spct((cur-prev)/prev):"(Blank)";
+}
+function groupBy(rows,dim){
+  const g=new Map();rows.forEach(x=>{const k=x[FIELD[dim]];if(!g.has(k))g.set(k,[]);g.get(k).push(x)});return g;
+}
+function keysOrdered(dim,g){
+  let k=[...g.keys()];
+  if(dim==="month")k.sort((a,b)=>a-b);else if(dim==="rating")k.sort((a,b)=>RATING_ORDER.indexOf(a)-RATING_ORDER.indexOf(b));else if(dim==="year")k.sort((a,b)=>a-b);else k.sort();
+  return k;
+}
+const label=(dim,k)=>dim==="month"?MONTHS[k-1]:String(k);
+
+function monthSeries(rows,fn){
+  const out=[];for(let i=1;i<=72;i++){const y=2020+Math.floor((i-1)/12),m=(i-1)%12+1;const rr=rows.filter(x=>x.y===y&&x.m===m);out.push({i,y,m,lab:y+"-"+String(m).padStart(2,"0"),v:(rr.length&&y<=2024)?fn(rr):null})}
+  return out;
+}
+function forecastModel(series){
+  const pts=series.filter(p=>p.v!=null);const n=pts.length;if(n<2)return null;
+  const sx=sum(pts,p=>p.i),sy=sum(pts,p=>p.v),sxy=sum(pts,p=>p.i*p.v),sxx=sum(pts,p=>p.i*p.i);
+  const slope=(n*sxy-sx*sy)/(n*sxx-sx*sx),icpt=(sy-slope*sx)/n;
+  const overall=sy/n;const si={};
+  for(let m=1;m<=12;m++){const mp=pts.filter(p=>p.m===m);si[m]=mp.length&&overall?(sum(mp,p=>p.v)/mp.length)/overall:1}
+  return{slope,icpt,si};
+}
+
+const baseAxis={axisLine:{lineStyle:{color:"#c3cad6"}},axisTick:{show:false},axisLabel:{color:"#5B6B7F",fontSize:10},splitLine:{lineStyle:{color:"#eef1f6"}}};
+const tip={trigger:"axis",backgroundColor:"#fff",borderColor:"#c3cad6",textStyle:{fontSize:11,color:"#1B2A3A"}};
+
+function chartOption(p,v,vi){
+  const vid="v"+vi;const rows=rowsFor(p.id,vid);const cross=state[p.id].cross;
+  const hi=(dim,k)=>!cross||cross.vid!==vid||String(cross.val)===String(k);
+  if(v.type==="area"){
+    const s=monthSeries(rows,M.tourists).filter(d=>d.y<=2024);
+    return{grid:{left:50,right:14,top:14,bottom:28},tooltip:Object.assign({},tip,{valueFormatter:F.n}),xAxis:Object.assign({type:"category",data:s.map(d=>d.lab),boundaryGap:false},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:10,interval:11}}),yAxis:Object.assign({type:"value"},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:10,formatter:F.auto}}),
+      series:[{type:"line",name:"Total Tourists",data:s.map(d=>d.v),smooth:false,symbol:"none",connectNulls:true,lineStyle:{color:"#1F77B4",width:2},areaStyle:{color:"rgba(31,119,180,.25)"}}]};
+  }
+  if(v.type==="donut"){
+    const g=groupBy(rows,v.dim);let k=keysOrdered(v.dim,g);const vals=k.map(x=>({k:x,v:v.m(g.get(x))}));if(v.sort==="desc")vals.sort((a,b)=>b.v-a.v);
+    return{tooltip:{trigger:"item",formatter:o=>o.name+"<br>"+F.auto(o.value)+" ("+o.percent.toFixed(1)+"%)"},color:COLORS,
+      legend:v.legendRight?{orient:"vertical",right:6,top:"middle",textStyle:{fontSize:10,color:"#5B6B7F"},itemWidth:10,itemHeight:10}:{show:false},
+      series:[{type:"pie",radius:["45%","72%"],center:[v.legendRight?"38%":"50%","52%"],label:{fontSize:9.5,color:"#1B2A3A",formatter:v.legendRight?"{d}%":"{b}\n{d}%"},labelLine:{length:6,length2:6},
+        data:vals.map((d,i)=>({name:label(v.dim,d.k),value:d.v,raw:d.k,itemStyle:{opacity:hi(v.dim,d.k)?1:.3}}))}]};
+  }
+  if(v.type==="column"||v.type==="bar"){
+    const g=groupBy(rows,v.dim);let k=keysOrdered(v.dim,g);let vals=k.map(x=>({k:x,v:v.m(g.get(x))}));
+    if(v.type==="bar")vals.sort((a,b)=>b.v-a.v);
+    const fmt=v.fmt||F.auto;
+    const cat={type:"category",data:vals.map(d=>label(v.dim,d.k))},val={type:"value",axisLabel:{color:"#5B6B7F",fontSize:10,formatter:fmt}};
+    if(v.minZero===false){const mn=Math.min(...vals.map(d=>d.v));val.min=Math.floor(mn*20)/20}
+    const data=vals.map(d=>({value:d.v,raw:d.k,itemStyle:{color:v.color,opacity:hi(v.dim,d.k)?1:.3}}));
+    if(v.type==="bar"){
+      const visible=Math.max(1,Math.floor((v.h-40)/18));
+      return{grid:{left:104,right:52,top:6,bottom:10},tooltip:Object.assign({},tip,{trigger:"item",formatter:o=>o.name+": "+fmt(o.value)}),
+        xAxis:Object.assign({},val,{show:false}),yAxis:Object.assign({},cat,baseAxis,{inverse:true,axisLabel:{color:"#1B2A3A",fontSize:10,width:96,overflow:"truncate"}}),
+        dataZoom:vals.length>visible?[{type:"slider",yAxisIndex:0,right:2,width:8,start:0,end:visible/vals.length*100,showDetail:false,brushSelect:false,handleSize:0,fillerColor:"#c3cad6",borderColor:"transparent",backgroundColor:"#f0f2f5"},{type:"inside",yAxisIndex:0,zoomOnMouseWheel:false,moveOnMouseWheel:true}]:[],
+        series:[{type:"bar",data,barMaxWidth:13,label:{show:true,position:"right",fontSize:9.5,color:"#1B2A3A",formatter:o=>fmt(o.value)}}]};
+    }
+    return{grid:{left:44,right:10,top:16,bottom:24},tooltip:Object.assign({},tip,{trigger:"item",formatter:o=>o.name+": "+fmt(o.value)}),xAxis:Object.assign({},cat,baseAxis),yAxis:Object.assign({},val,baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:9.5,formatter:fmt}}),
+      series:[{type:"bar",data,barMaxWidth:18}]};
+  }
+  if(v.type==="combo"||v.type==="comboYear"){
+    const dim=v.type==="comboYear"?"year":v.dim;const g=groupBy(rows,dim);let k=keysOrdered(dim,g);let vals=k.map(x=>({k:x,a:v.m1[1](g.get(x)),b:v.m2[1](g.get(x))}));
+    if(v.sort==="desc")vals.sort((a,b)=>b.a-a.a);
+    return{grid:{left:48,right:44,top:30,bottom:34},legend:{top:0,left:6,textStyle:{fontSize:10,color:"#5B6B7F"},itemWidth:10,itemHeight:8},
+      tooltip:Object.assign({},tip,{formatter:ps=>ps[0].name+"<br>"+ps.map(o=>o.marker+o.seriesName+": "+(o.seriesIndex?v.m2[3]:v.m1[3])(o.value)).join("<br>")}),
+      xAxis:Object.assign({type:"category",data:vals.map(d=>label(dim,d.k))},baseAxis,{axisLabel:{color:"#1B2A3A",fontSize:9.5,interval:0,rotate:dim==="purpose"?18:0}}),
+      yAxis:[Object.assign({type:"value"},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:9.5,formatter:v.m1[3]}}),Object.assign({type:"value",scale:true},baseAxis,{splitLine:{show:false},axisLabel:{color:"#5B6B7F",fontSize:9.5,formatter:v.m2[3]}})],
+      series:[{type:"bar",name:v.m1[0],data:vals.map(d=>({value:d.a,raw:d.k,itemStyle:{opacity:hi(dim,d.k)?1:.3}})),itemStyle:{color:v.m1[2]},barMaxWidth:26},
+              {type:"line",name:v.m2[0],yAxisIndex:1,data:vals.map(d=>d.b),itemStyle:{color:v.m2[2]},lineStyle:{width:2},symbolSize:6}]};
+  }
+  if(v.type==="forecastRevenue"||v.type==="forecastOcc"){
+    const isRev=v.type==="forecastRevenue";const fn=isRev?M.revenue:M.occ;const fmt=isRev?F.usdAuto:F.pct;
+    const s=monthSeries(rows,fn);const mod=forecastModel(s);
+    const actual=s.map(d=>d.v);
+    const series=[{type:"line",name:isRev?"Revenue Actual":"Occupancy Actual",data:actual,symbol:"none",connectNulls:true,lineStyle:{width:1.8,color:isRev?"#1F77B4":"#2CA58D"},itemStyle:{color:isRev?"#1F77B4":"#2CA58D"}}];
+    if(isRev){
+      const ma=s.map((d,i)=>{if(d.y>2024)return null;const w=s.slice(Math.max(0,i-2),i+1).filter(x=>x.v!=null);return w.length?sum(w,x=>x.v)/w.length:null});
+      series.push({type:"line",name:"Revenue 3M Moving Avg",data:ma,symbol:"none",lineStyle:{width:1.6,color:"#9DB9D3"},itemStyle:{color:"#9DB9D3"}});
+      if(mod){
+        series.push({type:"line",name:"Revenue Trend",data:s.map(d=>mod.icpt+mod.slope*d.i),symbol:"none",lineStyle:{width:1.6,type:"dashed",color:"#7F7F7F"},itemStyle:{color:"#7F7F7F"}});
+        series.push({type:"line",name:"Revenue Forecast",data:s.map(d=>d.y>2024?(mod.icpt+mod.slope*d.i)*mod.si[d.m]:null),symbol:"circle",symbolSize:4,lineStyle:{width:2.2,color:"#E15759"},itemStyle:{color:"#E15759"}});
+      }
+    }else if(mod){
+      series.push({type:"line",name:"Occupancy Forecast",data:s.map(d=>Math.min(Math.max((mod.icpt+mod.slope*d.i)*mod.si[d.m],0),1)),symbol:"none",lineStyle:{width:1.8,type:"dashed",color:"#E15759"},itemStyle:{color:"#E15759"}});
+    }
+    return{grid:{left:52,right:14,top:30,bottom:26},legend:{top:0,left:6,textStyle:{fontSize:10,color:"#5B6B7F"},itemWidth:14,itemHeight:6},
+      tooltip:Object.assign({},tip,{valueFormatter:fmt}),
+      xAxis:Object.assign({type:"category",data:s.map(d=>d.lab),boundaryGap:false},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:10,interval:11}}),
+      yAxis:Object.assign({type:"value",scale:!isRev},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:10,formatter:fmt}}),
+      series};
+  }
+  if(v.type==="scatter"){
+    const g=groupBy(rows,v.dim);const k=keysOrdered(v.dim,g);
+    const pts=k.map(x=>{const r=g.get(x);return{k:x,x:v.mx[1](r),y:v.my[1](r),s:v.ms(r)}});
+    const maxS=Math.max(...pts.map(p=>p.s),1);
+    return{grid:{left:52,right:20,top:14,bottom:40},tooltip:{trigger:"item",formatter:o=>"<b>"+o.data.name+"</b><br>"+v.mx[0]+": "+v.mx[2](o.data.value[0])+"<br>"+v.my[0]+": "+v.my[2](o.data.value[1])},
+      xAxis:Object.assign({type:"value",scale:true,name:v.mx[0],nameLocation:"middle",nameGap:24,nameTextStyle:{fontSize:10,color:"#5B6B7F"}},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:9.5,formatter:v.mx[2]}}),
+      yAxis:Object.assign({type:"value",scale:true},baseAxis,{axisLabel:{color:"#5B6B7F",fontSize:9.5,formatter:v.my[2]}}),
+      series:[{type:"scatter",data:pts.map(p=>({name:label(v.dim,p.k),raw:p.k,value:[p.x,p.y],symbolSize:6+Math.sqrt(p.s/maxS)*22,itemStyle:{color:v.color,opacity:hi(v.dim,p.k)?.75:.18,borderColor:"#fff",borderWidth:1}})),
+        label:{show:pts.length<=25,formatter:o=>o.data.name,position:"top",fontSize:9,color:"#1B2A3A"},labelLayout:{hideOverlap:true}}]};
+  }
+  if(v.type==="bar2"){
+    const g=groupBy(rows,v.dim);let vals=keysOrdered(v.dim,g).map(x=>({k:x,a:v.m1[1](g.get(x)),b:v.m2[1](g.get(x))}));vals.sort((a,b)=>b.a-a.a);
+    const visible=Math.max(1,Math.floor((v.h-60)/24));
+    return{grid:{left:104,right:30,top:26,bottom:8},legend:{top:0,left:6,textStyle:{fontSize:10,color:"#5B6B7F"},itemWidth:10,itemHeight:8},tooltip:Object.assign({},tip,{valueFormatter:F.d1}),
+      xAxis:{type:"value",show:false,max:10},yAxis:Object.assign({type:"category",data:vals.map(d=>label(v.dim,d.k)),inverse:true},baseAxis,{axisLabel:{color:"#1B2A3A",fontSize:10,width:96,overflow:"truncate"}}),
+      dataZoom:vals.length>visible?[{type:"slider",yAxisIndex:0,right:2,width:8,start:0,end:visible/vals.length*100,showDetail:false,brushSelect:false,handleSize:0,fillerColor:"#c3cad6",borderColor:"transparent",backgroundColor:"#f0f2f5"},{type:"inside",yAxisIndex:0,zoomOnMouseWheel:false,moveOnMouseWheel:true}]:[],
+      series:[{type:"bar",name:v.m1[0],data:vals.map(d=>({value:d.a,raw:d.k,itemStyle:{opacity:hi(v.dim,d.k)?1:.3}})),itemStyle:{color:v.m1[2]},barMaxWidth:9,label:{show:true,position:"right",fontSize:9,formatter:o=>F.d1(o.value)}},
+              {type:"bar",name:v.m2[0],data:vals.map(d=>({value:d.b,raw:d.k,itemStyle:{opacity:hi(v.dim,d.k)?1:.3}})),itemStyle:{color:v.m2[2]},barMaxWidth:9,label:{show:true,position:"right",fontSize:9,formatter:o=>F.d1(o.value)}}]};
+  }
+  return null;
+}
+
+function htmlVisual(p,v,vi,el){
+  const vid="v"+vi;const rows=rowsFor(p.id,vid);const cross=state[p.id].cross;
+  if(v.type==="table"){
+    const g=groupBy(rows,v.dim);const tot=M.tourists(rows);
+    let list=[...g.keys()].map(k=>({k,r:g.get(k)}));
+    const sc=v.sortCol||1;const fnSort=v.cols[sc][1];list.sort((a,b)=>(fnSort==="share"?M.tourists(b.r)-M.tourists(a.r):fnSort(b.r)-fnSort(a.r)));
+    const cell=(c,r)=>c[1]==="share"?c[2](div(M.tourists(r),tot)):c[2](c[1](r));
+    let h='<table class="tb"><thead><tr>'+v.cols.map(c=>"<th>"+c[0]+"</th>").join("")+"</tr></thead><tbody>";
+    list.forEach(o=>{const sel=cross&&cross.vid===vid&&String(cross.val)===String(o.k);h+='<tr data-k="'+o.k+'" class="'+(sel?"sel":"")+'"><td>'+o.k+"</td>"+v.cols.slice(1).map(c=>"<td>"+cell(c,o.r)+"</td>").join("")+"</tr>"});
+    h+='<tr class="tot"><td>Total</td>'+v.cols.slice(1).map(c=>"<td>"+cell(c,rows)+"</td>").join("")+"</tr></tbody></table>";
+    el.innerHTML=h;
+    el.querySelectorAll("tbody tr[data-k]").forEach(tr=>tr.onclick=()=>toggleCross(p,vid,v.dim,tr.dataset.k));
+  }
+  if(v.type==="matrix"||v.type==="matrixYQ"){
+    let rk,ck,get,fmt,rlab,clab;
+    if(v.type==="matrixYQ"){rk=[...new Set(rows.map(x=>x.y))].sort();ck=["Q1","Q2","Q3","Q4"];fmt=v=>v==null?"":"$"+(v/1e6).toFixed(1)+"M";
+      get=(r,c)=>{const rr=rows.filter(x=>(r==null||x.y===r)&&(c==null||"Q"+Math.ceil(x.m/3)===c));return rr.length?M.revenue(rr):null}}
+    else{const gr=groupBy(rows,v.rows);rk=keysOrdered(v.rows,gr);ck=RATING_ORDER.filter(c=>rows.some(x=>x[FIELD[v.cols]]===c));fmt=v.fmt;
+      get=(r,c)=>{const rr=rows.filter(x=>(r==null||x[FIELD[v.rows]]===r)&&(c==null||x[FIELD[v.cols]]===c));return rr.length?v.m(rr):null}}
+    const all=[];rk.forEach(r=>ck.forEach(c=>{const x=get(r,c);if(x!=null)all.push(x)}));const mn=Math.min(...all),mx=Math.max(...all);
+    const shade=x=>{if(x==null||v.type==="matrixYQ")return"";const t=(x-mn)/((mx-mn)||1);return' style="background:rgba(31,119,180,'+(0.08+t*0.5).toFixed(2)+')"'};
+    let h='<table class="tb"><thead><tr><th>'+(v.type==="matrixYQ"?"Year":"Purpose of Visit")+"</th>"+ck.map(c=>"<th>"+c+"</th>").join("")+"<th>Total</th></tr></thead><tbody>";
+    rk.forEach(r=>{h+="<tr><td>"+r+"</td>"+ck.map(c=>{const x=get(r,c);return"<td"+shade(x)+">"+(x==null?"":fmt(x))+"</td>"}).join("")+"<td><b>"+fmt(get(r,null))+"</b></td></tr>"});
+    h+='<tr class="tot"><td>Total</td>'+ck.map(c=>"<td>"+fmt(get(null,c))+"</td>").join("")+"<td>"+fmt(get(null,null))+"</td></tr></tbody></table>";
+    el.innerHTML=h;
+  }
+}
+
+function toggleCross(p,vid,dim,val){
+  const s=state[p.id];
+  if(s.cross&&s.cross.vid===vid&&String(s.cross.val)===String(val))s.cross=null;else s.cross={vid,dim,val};
+  refresh();
+}
+
+function render(){
+  charts.forEach(c=>c.dispose());charts.length=0;
+  const p=PAGES[current];const cv=document.getElementById("canvas");cv.innerHTML="";
+  cv.insertAdjacentHTML("beforeend",'<div class="hdr"><h1>'+p.title+"</h1><p>"+p.sub+"</p></div>");
+  p.slicers.forEach((s,i)=>{
+    const vals=uniq(FIELD[s[0]]);const d=document.createElement("div");d.className="sl";Object.assign(d.style,{left:(10+i*250)+"px",top:"66px",width:"240px"});
+    d.innerHTML="<label>"+s[1]+'</label><select data-k="'+s[0]+'"><option value="">All</option>'+vals.map(v=>'<option value="'+v+'">'+(s[0]==="month"?MONTHS[v-1]:v)+"</option>").join("")+"</select>";
+    cv.appendChild(d);const sel=d.querySelector("select");sel.value=state[p.id].sl[s[0]]||"";
+    sel.onchange=()=>{state[p.id].sl[s[0]]=sel.value||null;if(s[0]==="country"&&state[p.id].sl.city){const ok=RAW.some(x=>x.country===sel.value&&x.city===state[p.id].sl.city);if(!ok&&sel.value)state[p.id].sl.city=null}refresh()};
+  });
+  const n=p.cards.length,gap=10,w=Math.floor((1260-gap*(n-1))/n);
+  p.cards.forEach((c,i)=>{const d=document.createElement("div");d.className="v card";Object.assign(d.style,{left:(10+i*(w+gap))+"px",top:"128px",width:w+"px",height:"88px"});d.innerHTML='<div class="val"></div><div class="lab">'+c[0]+"</div>";d.dataset.ci=i;cv.appendChild(d)});
+  p.visuals.forEach((v,vi)=>{
+    const d=document.createElement("div");d.className="v";Object.assign(d.style,{left:v.x+"px",top:v.y+"px",width:v.w+"px",height:v.h+"px"});
+    d.innerHTML='<div class="t">'+v.title+"</div>"+(["table","matrix","matrixYQ"].includes(v.type)?'<div class="scroll"></div>':'<div class="c"></div>');
+    d.dataset.vi=vi;cv.appendChild(d);
+    if(!["table","matrix","matrixYQ"].includes(v.type)){
+      const ch=echarts.init(d.querySelector(".c"),null,{renderer:"canvas"});ch.__vi=vi;charts.push(ch);
+      ch.on("click",o=>{const raw=o.data&&o.data.raw;const dim=v.type==="comboYear"?"year":v.dim;if(raw!=null&&dim)toggleCross(p,"v"+vi,dim,raw)});
+    }
+  });
+  document.querySelectorAll("#tabs button").forEach((b,i)=>b.className=i===current?"on":"");
+  refresh();
+}
+function refresh(){
+  const p=PAGES[current];
+  document.querySelectorAll("#canvas .card").forEach(d=>{const c=p.cards[+d.dataset.ci];const val=c[1](rowsFor(p.id,null),{pid:p.id});const e=d.querySelector(".val");e.textContent=val;e.className="val"+(c[2]==="yoy"&&val!=="(Blank)"?(val[0]==="-"?" neg":" pos"):"")});
+  charts.forEach(ch=>{const v=p.visuals[ch.__vi];ch.setOption(chartOption(p,v,ch.__vi),true)});
+  document.querySelectorAll("#canvas .v[data-vi]").forEach(d=>{const v=p.visuals[+d.dataset.vi];if(["table","matrix","matrixYQ"].includes(v.type))htmlVisual(p,v,+d.dataset.vi,d.querySelector(".scroll"))});
+}
+const tabs=document.getElementById("tabs");
+PAGES.forEach((p,i)=>{const b=document.createElement("button");b.textContent=p.name;b.onclick=()=>{current=i;render()};tabs.appendChild(b)});
+function fit(){const s=Math.min(window.innerWidth/1280,window.innerHeight/760);document.getElementById("stage").style.transform="scale("+s+")"}
+window.addEventListener("resize",fit);fit();render();
+window.__report={go:i=>{current=i;render()},set:(k,v)=>{state[PAGES[current].id].sl[k]=v;render()},cross:(vi,val)=>{const p=PAGES[current];const v=p.visuals[vi];toggleCross(p,"v"+vi,v.type==="comboYear"?"year":v.dim,val)}};
+</script>
+</body>
+</html>
